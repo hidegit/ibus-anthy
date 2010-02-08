@@ -1142,7 +1142,9 @@ class Engine(ibus.EngineBase):
                     cmd_exec([0, RS(), LS()][self._SS])
                 self._SS = 0
             if keyval in [RS(), LS()]:
-                self._RMM = self._RSS = 0
+                self._RSS = 0
+            elif keyval == self._RMM:
+                self._RMM = 0
         else:
             if keyval in [LS(), RS()] and state == 0:
                 if self._SS:
@@ -1157,7 +1159,8 @@ class Engine(ibus.EngineBase):
                     insert(thumb.table[self._MM][1 if keyval == RS() else 2])
                 else:
                     if self._RSS == (1 if keyval == RS() else 2):
-                        insert(thumb.table[self._RMM][self._RSS])
+                        if self._RMM:
+                            insert(thumb.table[self._RMM][self._RSS])
                     else:
                         self._SS = 1 if keyval == RS() else 2
                         start(T1())
@@ -1174,7 +1177,8 @@ class Engine(ibus.EngineBase):
                     insert(thumb.table[keyval][self._SS])
                 else:
                     if self._RMM  == keyval:
-                        insert(thumb.table[self._RMM][self._RSS])
+                        if self._RSS:
+                            insert(thumb.table[self._RMM][self._RSS])
                     else:
                         if cmd_exec(keyval, state):
                             return True
